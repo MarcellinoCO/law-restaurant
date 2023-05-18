@@ -1,0 +1,96 @@
+version: "3.7"
+services:
+  orchestrator-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=tester
+      - POSTGRES_PASSWORD=tester
+      - POSTGRES_DB=test_law
+    ports:
+      - 5435:5432
+    volumes:
+      - orchestrator-db-data:/var/lib/postgresql/data
+
+  orchestrator-service:
+    build: ./orchestrator
+    command: 
+     - python orchestrator/manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./orchestrator/.env.dev
+    ports:
+      - 8000:8000
+    volumes:
+      - ./orchestrator:/orchestra
+    depends_on:
+      - orchestrator-db
+
+  menu-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=menu1234
+      - POSTGRES_PASSWORD=menu1234
+      - POSTGRES_DB=menu
+    ports: 
+      - 5432:5432
+    volumes:
+      - menu-db-data:/var/lib/postgresql/data
+
+  menu-service:
+    build:
+      context: ./menu
+      dockerfile: Dockerfile
+    ports:
+      - 8001:3000
+    depends_on:
+      - menu-db
+
+  coupon-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=law_coupon_service
+    ports:
+      - 5433:5432
+    volumes:
+      - coupon-db-data:/var/lib/postgresql/data
+
+  coupon-service:
+    build:
+      context: ./coupon
+      dockerfile: Dockerfile
+    ports:
+      - 8002:8080
+    depends_on:
+      - coupon-db
+
+  frontend-service:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - orchestrator-service
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    depends_on:
+      - orchestrator-db
+      - menu-db
+      - coupon-db
+
+volumes:
+  orchestrator-db-data:
+  coupon-db-data:
+  menu-db-data:
+  pgadmin:
