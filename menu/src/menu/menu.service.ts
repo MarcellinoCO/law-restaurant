@@ -29,8 +29,7 @@ export class MenuService {
   }
 
   async updateMenu(id: number, menu: Partial<Menu>): Promise<Menu> {
-    await this.menuRepository.update(id, menu);
-    return this.menuRepository.findOne({ where: { id } });
+    return await this.menuRepository.save({ ...menu, id });
   }
 
   async removeMenu(id: number): Promise<void> {
