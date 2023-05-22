@@ -22,7 +22,7 @@ class CouponCreate(BaseModel):
 async def connect_to_db():
     conn = await asyncpg.connect(user="postgres", password="admin",
                                  database="law_coupon_service", host="coupon-db",
-                                 port="5433")
+                                 port="5432")
     return conn
 
 

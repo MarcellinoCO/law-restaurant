@@ -10,19 +10,24 @@ services:
       - 5435:5432
     volumes:
       - orchestrator-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d test_law -U tester"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   orchestrator-service:
     build: ./orchestrator
-    command: 
-     - python orchestrator/manage.py runserver 0.0.0.0:8000
-    env_file:
-      - ./orchestrator/.env.dev
-    ports:
-      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./orchestrator:/orchestra
+    ports:
+      - 8000:8000
+    env_file:
+      - ./orchestrator/.env.dev
     depends_on:
-      - orchestrator-db
+      orchestrator-db:
+        condition: service_healthy
 
   menu-db:
     image: postgres:latest
@@ -30,10 +35,15 @@ services:
       - POSTGRES_USER=menu1234
       - POSTGRES_PASSWORD=menu1234
       - POSTGRES_DB=menu
-    ports: 
+    ports:
       - 5432:5432
     volumes:
       - menu-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d menu -U menu1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   menu-service:
     build:
@@ -42,7 +52,8 @@ services:
     ports:
       - 8001:3000
     depends_on:
-      - menu-db
+      menu-db:
+        condition: service_healthy
 
   coupon-db:
     image: postgres:latest
@@ -54,6 +65,11 @@ services:
       - 5433:5432
     volumes:
       - coupon-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d menu -U menu1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   coupon-service:
     build:
@@ -62,7 +78,8 @@ services:
     ports:
       - 8002:8080
     depends_on:
-      - coupon-db
+      coupon-db:
+        condition: service_healthy
 
   frontend-service:
     build:
@@ -78,9 +95,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
-       - pgadmin:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin
     ports:
       - 8080:80
     restart: unless-stopped
