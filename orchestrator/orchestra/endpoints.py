@@ -1,4 +1,4 @@
 class Endpoints():
-    ORDER_SERVICE = "http://host.docker.internal:7000/api/order"
-    COUPON_SERVICE = "http://host.docker.internal:8080/coupons"
-    MENU_SERVICE = "http://host.docker.internal:3000/menu"
+    ORDER_SERVICE = "http://order-service:8003/api/order"
+    COUPON_SERVICE = "http://coupon-service:8002/coupons"
+    MENU_SERVICE = "http://menu-service:8001/menu"
