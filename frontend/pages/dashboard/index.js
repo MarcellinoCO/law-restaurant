@@ -19,7 +19,7 @@ export default function Menu() {
     (async () => {
       try {
         const user = await detail();
-        if (user.role !== "admin") replace("/");
+        if (user.role !== 'Admin') replace("/");
         setRole(user.role);
       } catch (err) {
         process.env.NODE_ENV === "development" && console.log(err);
@@ -29,6 +29,6 @@ export default function Menu() {
     })();
   }, [detail, replace]);
 
-  if (loading || role !== "admin") return null;
+  if (loading || role !== 'Admin') return null;
   return <DashboardAdminContainer />;
 }
