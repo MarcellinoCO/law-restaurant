@@ -81,6 +81,33 @@ services:
       coupon-db:
         condition: service_healthy
 
+  order-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=order
+      - POSTGRES_PASSWORD=order
+      - POSTGRES_DB=order
+    ports:
+      - 5434:5432
+    volumes:
+      - orchestrator-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d order -U order"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  order-service:
+    build: ./order
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./order:/code
+    ports:
+      - 8003:8000
+    depends_on:
+      order-db:
+        condition: service_healthy
+
   frontend-service:
     build:
       context: ./frontend

@@ -80,19 +80,14 @@ WSGI_APPLICATION = "order_service.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-name = config('db_name')
-user = config('db_username')
-passwd = config('db_password')
-host = config('db_host')
-port = config('db_port')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': name,
-        'USER': user,
-        'PASSWORD': passwd,
-        'HOST': host,
-        'PORT': port
+        'NAME': "order",
+        'USER': "order",
+        'PASSWORD': "order",
+        'HOST': "order-db",
+        'PORT': "5432"
     }
 }
 
