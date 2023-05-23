@@ -96,7 +96,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+ 
   order-service:
     build: ./order
     command: python manage.py runserver 0.0.0.0:8000
@@ -104,6 +104,8 @@ services:
       - ./order:/code
     ports:
       - 8003:8000
+    env_file:
+      - ./order/.env
     depends_on:
       order-db:
         condition: service_healthy

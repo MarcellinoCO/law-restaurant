@@ -26,7 +26,6 @@ SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -86,7 +85,7 @@ DATABASES = {
         'NAME': "order",
         'USER': "order",
         'PASSWORD': "order",
-        'HOST': "order-db",
+        'HOST': "order",
         'PORT': "5432"
     }
 }
