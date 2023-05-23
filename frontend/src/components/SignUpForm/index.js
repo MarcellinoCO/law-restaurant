@@ -1,9 +1,6 @@
-import axios from "axios";
 import { Poppins } from "next/font/google";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import useLogin from "@/src/utils/useLogin";
 
 const boldPoppins = Poppins({ weight: "700", subsets: ["latin"] });

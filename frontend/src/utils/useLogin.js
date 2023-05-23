@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AUTH_BACKEND_URL } from "./api";
+import swal from "sweetalert";
 
 const useLogin = () => {
     const router = useRouter();
@@ -17,20 +18,21 @@ const useLogin = () => {
                 password: password,
             })
             .then((res) => {
-                console.log(res.data);
-                console.log(res.data["access"]);
-                console.log(res.data["refresh"]);
                 localStorage.setItem("accessToken", res.data["access"]);
                 localStorage.setItem("refreshToken", res.data["refresh"]);
-                console.log(
-                    "accessToken from localStorage : " +
-                        localStorage.getItem("accessToken")
-                );
                 setIsLoggedIn(true);
+                swal("Login sukses!", {
+                    buttons: false,
+                    timer: 1000,
+                  });
                 router.push("/");
             })
             .catch(function name(err) {
                 console.log(err);
+                swal("Login gagal!", {
+                    buttons: false,
+                    timer: 1000,
+                  });
             });
     };
 
@@ -52,9 +54,7 @@ const useLogin = () => {
             })
             .catch(function name(err) {
                 console.log(err);
-                console.log("do refresh");
                 if (refresh()) {
-                    console.log("inside if");
                     detail();                    
                 }
             });
@@ -69,10 +69,8 @@ const useLogin = () => {
                 token: accessToken,
             })
             .then(() => {
-                console.log("Token is valid");
             })
             .catch(function name(err) {
-                console.log("Token is not valid or expired");
                 refresh();
             });
     };
@@ -86,13 +84,11 @@ const useLogin = () => {
                 refresh: refreshToken,
             })
             .then((res) => {
-                console.log("refresh success!")
                 localStorage.setItem("accessToken", res.data["access"]);
                 isRefreshed = true;
                 window.location.reload(true)           
             })
             .catch(function name(err) {
-                console.log("Please relog your account");
                 logout();
                 isRefreshed = false;
             });
@@ -121,11 +117,14 @@ const useLogin = () => {
                 role: role,
             })
             .then((res) => {
-                console.log("Register succees!");
                 console.log(
                     `Your username: ${res.data["username"]}, role as : ${res.data["role"]}`
                 );
                 router.push("/login");
+                swal("Akun berhasil dibuat!", {
+                    buttons: false,
+                    timer: 1000,
+                  });
             })
             .catch(function name(err) {
                 console.log(err);

@@ -28,6 +28,10 @@ export default function OrderCardKitchen(props) {
             .catch(function name(err) {
                 console.log(err);
             });
+        swal("Pesanan berhasil diupdate!", {
+            buttons: false,
+            timer: 1000,
+        });
         router.reload();
     }
 

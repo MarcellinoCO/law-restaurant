@@ -1,14 +1,11 @@
 import { Poppins } from "next/font/google";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import useLogin from "@/src/utils/useLogin";
 
 const boldPoppins = Poppins({ weight: "700", subsets: ["latin"] });
 const semiBoldPoppins = Poppins({ weight: "600", subsets: ["latin"] });
 const regularPoppins = Poppins({ weight: "400", subsets: ["latin"] });
-const AUTH_BACKEND_URL = "http://localhost:8000"; // local
-// const AUTH_BACKEND_URL = "http://orchestrator-service:8000"
 
 export default function SignInForm() {
     const [username, setUsername] = useState("");
@@ -16,8 +13,7 @@ export default function SignInForm() {
     const { login } = useLogin();
 
     function handleSubmit() {
-        login(username, password);
-        alert("Login sukses!");
+        login(username, password);        
     }
 
     return (

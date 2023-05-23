@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { AUTH_BACKEND_URL } from "@/src/utils/api";
 import axios from "axios";
 import { useRouter } from "next/router";
+import swal from "sweetalert";
 
 const boldPoppins = Poppins({ weight: "700", subsets: ["latin"] });
 const semiBoldPoppins = Poppins({ weight: "600", subsets: ["latin"] });
@@ -61,7 +62,7 @@ export default function OrderForm() {
             .catch(function name(err) {
                 console.log(err);
             });
-        if(response != null || response != "undefined"){
+        if (response != null || response != "undefined") {
             setMenuList(response.data);
         }
     };
@@ -140,13 +141,21 @@ export default function OrderForm() {
                 console.log(err);
                 return null;
             });
-        if (response === null) {
-            alert("Submit failed!");
+        if (response === null) {            
             router.reload();
+            swal("Gagal menambahkan pesanan!", {
+                buttons: false,
+                timer: 1000,
+            });
         } else {
             setCouponAmount(0);
             setCouponStatus(false);
-            alert("Success!");
+            router.reload();
+            swal("Berhasil menambahkan pesanan!", {
+                buttons: false,
+                timer: 1000,
+            });
+            
         }
     }
 
