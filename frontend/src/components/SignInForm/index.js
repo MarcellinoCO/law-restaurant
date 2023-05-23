@@ -49,7 +49,7 @@ export default function SignInForm() {
                             Password
                         </label>
                         <input
-                            type="text"
+                            type="password"
                             className="border border-[#909090] text-center rounded-md"
                             id="password"
                             value={password}

@@ -55,7 +55,7 @@ export default function SignUpForm() {
                             Password
                         </label>
                         <input
-                            type="text"
+                            type="password"
                             className="border border-[#909090] text-center rounded-md"
                             id="password"
                             value={password}
@@ -68,7 +68,7 @@ export default function SignUpForm() {
                             Password Confirmation
                         </label>
                         <input
-                            type="text"
+                            type="password"
                             className="border border-[#909090] text-center rounded-md"
                             id="passwordConfirmation"
                             value={passwordConfirmation}

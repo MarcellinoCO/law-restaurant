@@ -61,7 +61,9 @@ export default function OrderForm() {
             .catch(function name(err) {
                 console.log(err);
             });
-        setMenuList(response.data);
+        if(response != null || response != "undefined"){
+            setMenuList(response.data);
+        }
     };
 
     function handleAddOrder() {
