@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': "order",
         'USER': "order",
         'PASSWORD': "order",
-        'HOST': "order",
+        'HOST': "order-db",
         'PORT': "5432"
     }
 }

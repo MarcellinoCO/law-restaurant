@@ -66,7 +66,7 @@ services:
     volumes:
       - coupon-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d menu -U menu1234"]
+      test: ["CMD-SHELL", "pg_isready -d law_coupon_service -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -90,7 +90,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - orchestrator-db-data:/var/lib/postgresql/data
+      - order-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d order -U order"]
       interval: 10s
@@ -138,5 +138,6 @@ services:
 volumes:
   orchestrator-db-data:
   coupon-db-data:
+  order-db-data:
   menu-db-data:
   pgadmin:
