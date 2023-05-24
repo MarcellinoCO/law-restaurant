@@ -17,6 +17,11 @@ export default function MenuContainer(){
         setCategories(allCategories);
         setViewMore(true);
     }
+
+    const handleCloseViewMore = () => {
+        setCategories([]);
+        setViewMore(false);
+    }
     
     useEffect(() => {
         try {
@@ -28,7 +33,9 @@ export default function MenuContainer(){
         }
     });
 
-    const menuToDisplay = selectedCategory ? menu.filter(item => item.category === selectedCategory) : menu;
+    const menuToDisplay = selectedCategory 
+        ? menu.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase().replace(/\s/g,'')) 
+        : menu;
 
     if (loading) { 
         return (
@@ -38,11 +45,16 @@ export default function MenuContainer(){
 
     return (
         <div className="min-h-screen px-20 py-10">
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-1 w-full max-w-md p-4 bg-stone-200 border border-gray-200 rounded-lg shadow sm:p-8 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">
                         <h5 className="text-3xl font-bold leading-none text-gray-900">Categories</h5>
-                        {!viewMore && <button onClick={handleViewMore} className="text-sm font-medium text-blue-600 hover:no-underline dark:text-blue-500">View more</button>}
+                        {!viewMore && 
+                            <button onClick={handleViewMore} className="text-sm font-medium text-blue-600 hover:no-underline dark:text-blue-500">View more</button>
+                        }
+                        {viewMore && 
+                            <button onClick={handleCloseViewMore} className="text-sm font-medium text-blue-600 hover:no-underline dark:text-blue-500">Close</button>
+                        }
                     </div>
                     <div className="flow-root">
                         <ul role="list">
@@ -63,10 +75,24 @@ export default function MenuContainer(){
                 <div className="col-span-2">
                     <h1 className="text-2xl text-black font-semibold">Popular Menu</h1>
                     <div>
-                        <ul className="grid grid-cols-4">
+                        <ul className="grid grid-cols-4 gap-4">
                             {menuToDisplay.map((menuItem, index) => (
                                 <li key={index} className="p-4 border border-gray-200 rounded-lg shadow sm:p-8">
-                                    {menuItem.name}
+                                    <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+                                        <div className="p-4">
+                                            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{menuItem.category}</div>
+                                            <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{menuItem.name}</a>
+                                            <p className="mt-2 text-gray-500">{menuItem.description}</p>
+                                            <div className="mt-2">
+                                                <span className="text-sm text-gray-500">Rp{menuItem.price}</span>
+                                            </div>
+                                            <div className="mt-2">
+                                                <span className={menuItem.availability ? "text-sm text-green-500" : "text-sm text-red-500"}>
+                                                    {menuItem.availability ? 'Available' : 'Not Available'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
