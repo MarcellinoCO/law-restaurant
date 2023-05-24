@@ -1,7 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import useLogin from "@/src/utils/useLogin";
+import { Poppins } from "next/font/google";
 import { AUTH_BACKEND_URL } from "@/src/utils/api";
+import swal from "sweetalert";
+
+const boldPoppins = Poppins({ weight: "700", subsets: ["latin"] });
+const semiBoldPoppins = Poppins({ weight: "600", subsets: ["latin"] });
+const regularPoppins = Poppins({ weight: "400", subsets: ["latin"] });
 
 export default function DashboardAdminContainer() {
     const [tab, setTab] = useState("menu");
@@ -25,13 +30,12 @@ export default function DashboardAdminContainer() {
     const [newCategory, setNewCategory] = useState("");
     const [menu, setMenu] = useState([]);
 
-    const [coupon, setCoupon] = useState([]);
     const [newCouponItem, setNewCouponItem] = useState("");
-    // const { detail } = useLogin();
+    const [couponAmount, setCouponAmount] = useState("");
 
     const handleCreateMenu = async (event) => {
         const accessToken = localStorage.getItem("accessToken");
-        event.preventDefault();
+        const url = `${AUTH_BACKEND_URL}/menu`;
 
         // Create new menu object
         const newMenu = {
@@ -41,8 +45,6 @@ export default function DashboardAdminContainer() {
             availability: newMenuAvailability,
             category: newCategory,
         };
-
-        const url = `${AUTH_BACKEND_URL}/menu`;
 
         // Send newMenu to the server
         axios
@@ -60,14 +62,55 @@ export default function DashboardAdminContainer() {
                 if (!categories.includes(newCategory)) {
                     setCategories([...categories, newCategory]);
                 }
+                swal("Menu berhasil ditambahkan!", {
+                    buttons: false,
+                    timer: 1000,
+                });
             })
             .catch((err) => {
                 console.error(err);
+                swal("Menu gagal ditambahkan!", {
+                    buttons: false,
+                    timer: 1000,
+                });
+            });
+    };
+
+    const handleCreateCoupon = async (event) => {
+        const accessToken = localStorage.getItem("accessToken");
+        const url = `${AUTH_BACKEND_URL}/coupons`;
+        console.log(newCouponItem);
+        console.log(couponAmount);
+        axios
+            .post(
+                url,
+                {
+                    code: newCouponItem,
+                    amount: couponAmount,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
+            .then(async (res) => {
+                swal("Coupon berhasil ditambahkan!", {
+                    buttons: false,
+                    timer: 1000,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                swal("Coupon gagal ditambahkan!", {
+                    buttons: false,
+                    timer: 1000,
+                });
             });
     };
 
     return (
-        <div className="flex h-screen">
+        <div className={`${regularPoppins.className} flex h-screen `}>
             <div className="p-3 space-y-2 overflow-y-scroll bg-stone-300 w-64 h-full rounded">
                 <h2 className="text-2xl font-semibold text-gray-800">
                     Admin Dashboard
@@ -93,7 +136,9 @@ export default function DashboardAdminContainer() {
                 <div className="bg-stone-300 p-4 rounded-lg shadow">
                     {tab === "menu" ? (
                         <div className="col-span-3 mb-6">
-                            <h1 className="flex justify-center text-2xl text-black font-semibold px-4 mx-auto max-w-2xl">
+                            <h1
+                                className={`${boldPoppins.className} flex justify-center text-2xl text-[#FF7E00] font-semibold px-4 mx-auto max-w-2xl`}
+                            >
                                 Menu Management
                             </h1>
                             <section>
@@ -226,8 +271,9 @@ export default function DashboardAdminContainer() {
                                             </div>
                                         </div>
                                         <button
-                                            type="submit"
+                                            type="button"
                                             className="inline-flex item-center my-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            onClick={() => handleCreateMenu()}
                                         >
                                             Add Menu
                                         </button>
@@ -237,7 +283,9 @@ export default function DashboardAdminContainer() {
                         </div>
                     ) : tab === "coupon" ? (
                         <div className="col-span-3 mb-6">
-                            <h1 className="flex justify-center text-2xl text-black font-semibold px-4 mx-auto max-w-2xl">
+                            <h1
+                                className={`${boldPoppins.className} flex justify-center text-2xl text-[#FF7E00] font-semibold px-4 mx-auto max-w-2xl`}
+                            >
                                 Coupon Management
                             </h1>
                             <section>
@@ -261,15 +309,36 @@ export default function DashboardAdminContainer() {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                    className="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                     placeholder="Enter Coupon Code"
+                                                    required
+                                                />
+                                                <label
+                                                    htmlFor="coupon"
+                                                    className="block mb-2 text-sm font-medium text-gray-900 "
+                                                >
+                                                    Amount
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="couponAmount"
+                                                    id="couponAmount"
+                                                    value={couponAmount}
+                                                    onChange={(e) =>
+                                                        setCouponAmount(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                    placeholder="Discount Amount"
                                                     required
                                                 />
                                             </div>
                                         </div>
                                         <button
-                                            type="submit"
+                                            type="button"
                                             className="inline-flex item-center my-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            onClick={() => handleCreateCoupon()}
                                         >
                                             Add Coupon
                                         </button>
