@@ -157,7 +157,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     restart: 'always'
     depends_on: 
-      - orcherstrator-service
+      - orchestrator-service
       - orchestrator-backup-service
       - menu-service
       - order-service
