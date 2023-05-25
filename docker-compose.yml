@@ -29,6 +29,19 @@ services:
       orchestrator-db:
         condition: service_healthy
 
+  orchestrator-backup-service:
+    build: ./orchestrator
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./orchestrator:/orchestra
+    ports:
+      - 8005:8000
+    env_file:
+      - ./orchestrator/.env.dev
+    depends_on:
+      orchestrator-db:
+        condition: service_healthy
+
   menu-db:
     image: postgres:latest
     environment:
@@ -134,6 +147,22 @@ services:
       - orchestrator-db
       - menu-db
       - coupon-db
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: 'always'
+    depends_on: 
+      - orcherstrator-service
+      - orchestrator-backup-service
+      - menu-service
+      - order-service
+      - coupon-service
+      - frontend-service
 
 volumes:
   orchestrator-db-data:
